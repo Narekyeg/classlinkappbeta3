@@ -107,8 +107,8 @@ function showStudentRegister() {
 }
 
 // Admin password for teacher access (in production, this should be more secure)
-const ADMIN_PASSWORD = "teacher2024";
-const MAIN_ADMIN_PASSWORD = "admin2024";
+const ADMIN_PASSWORD = "teacher190";
+const MAIN_ADMIN_PASSWORD = "Admin#1234%";
 
 function showTeacherAccess() {
     document.getElementById('teacher-access-modal').classList.remove('hidden');
@@ -1781,4 +1781,5 @@ function logout() {
     
     // Clear forms
     document.querySelectorAll('form').forEach(form => form.reset());
+
 }
