@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassLink - Ցուցակային Համակարգ</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ClassLink</h1>
+            <p>Ցուցակային Համակարգ</p>
+            <div class="admin-secret" onclick="adminSecretClick()" title="Ադմին">⚙️</div>
+        </div>
+        
+        <div class="role-selection">
+            <h2>Ընտրեք ձեր դերը</h2>
+            <button onclick="showStudentLogin()" class="role-btn">Աշակերտ</button>
+            <button onclick="showTeacherAccess()" class="role-btn">Ուսուցիչ</button>
+        </div>
+
+        <!-- Student Login/Register -->
+        <div id="student-section" class="auth-section hidden">
+            <div class="auth-container">
+                <h2>Աշակերտի Մուտք</h2>
+                <div class="tab-buttons">
+                    <button onclick="showStudentLogin()" class="tab-btn active" id="student-login-tab">Մուտք</button>
+                    <button onclick="showStudentRegister()" class="tab-btn" id="student-register-tab">Գրանցում</button>
+                </div>
+
+                <!-- Student Login Form -->
+                <form id="student-login-form" class="auth-form">
+                    <input type="text" id="student-username" placeholder="Օգտատիրոջ անուն" required>
+                    <div class="password-field">
+                        <input type="password" id="student-password" placeholder="Գաղտնաբառ" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('student-password')">👁️</button>
+                    </div>
+                    <button type="submit">Մուտք գործել</button>
+                    <button type="button" onclick="showRoleSelection()" class="back-btn">Վերադառնալ</button>
+                </form>
+
+                <!-- Student Register Form -->
+                <form id="student-register-form" class="auth-form hidden">
+                    <input type="text" id="reg-student-name" placeholder="Անուն Ազգանուն" required>
+                    <input type="text" id="reg-student-username" placeholder="Օգտատիրոջ անուն" required>
+                    <input type="email" id="reg-student-email" placeholder="Էլ. փոստի հասցե" required>
+                    <div class="password-field">
+                        <input type="password" id="reg-student-password" placeholder="Գաղտնաբառ" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('reg-student-password')">👁️</button>
+                    </div>
+                    <select id="reg-student-grade" required>
+                        <option value="">Ընտրեք դասարանը</option>
+                        <option value="10">10-րդ դասարան</option>
+                        <option value="11">11-րդ դասարան</option>
+                        <option value="12">12-րդ դասարան</option>
+                    </select>
+                    <input type="text" id="reg-student-classroom" placeholder="Մուտքագրեք դասասենյակը (օր.՝ Ա, Բ, Գ, Դ կամ ցանկացած այլ)" required>
+                    <button type="submit">Գրանցվել</button>
+                    <button type="button" onclick="showRoleSelection()" class="back-btn">Վերադառնալ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Teacher Login/Register -->
+        <div id="teacher-section" class="auth-section hidden">
+            <div class="auth-container">
+                <h2>Ուսուցչի Մուտք</h2>
+                <div class="tab-buttons">
+                    <button onclick="showTeacherLogin()" class="tab-btn active" id="teacher-login-tab">Մուտք</button>
+                    <button onclick="showTeacherRegister()" class="tab-btn" id="teacher-register-tab">Գրանցում</button>
+                </div>
+
+                <!-- Teacher Login Form -->
+                <form id="teacher-login-form" class="auth-form">
+                    <input type="text" id="teacher-username" placeholder="Օգտատիրոջ անուն" required>
+                    <div class="password-field">
+                        <input type="password" id="teacher-password" placeholder="Գաղտնաբառ" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('teacher-password')">👁️</button>
+                    </div>
+                    <button type="submit">Մուտք գործել</button>
+                    <button type="button" onclick="showRoleSelection()" class="back-btn">Վերադառնալ</button>
+                </form>
+
+                <!-- Teacher Register Form -->
+                <form id="teacher-register-form" class="auth-form hidden">
+                    <input type="text" id="reg-teacher-name" placeholder="Անուն Ազգանուն" required>
+                    <input type="text" id="reg-teacher-username" placeholder="Օգտատիրոջ անուն" required>
+                    <input type="email" id="reg-teacher-email" placeholder="Էլ. փոստի հասցե" required>
+                    <div class="password-field">
+                        <input type="password" id="reg-teacher-password" placeholder="Գաղտնաբառ" required>
+                        <button type="button" class="password-toggle" onclick="togglePasswordVisibility('reg-teacher-password')">👁️</button>
+                    </div>
+                    <input type="text" id="reg-teacher-subject" placeholder="Առարկա" required>
+                    <button type="submit">Գրանցվել</button>
+                    <button type="button" onclick="showRoleSelection()" class="back-btn">Վերադառնալ</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Student Dashboard -->
+        <div id="student-dashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h2>Բարի գալուստ, <span id="student-name-display"></span></h2>
+                <div class="user-info">
+                    <p>Դասարան: <span id="student-grade-display"></span></p>
+                    <p>Դասասենյակ: <span id="student-classroom-display"></span></p>
+                </div>
+                <button onclick="logout()" class="logout-btn">Դուրս գալ</button>
+            </div>
+            
+            <div class="attendance-section">
+                <h3>Ներկայություն նշել</h3>
+                <div class="attendance-status" id="attendance-status">
+                    <p id="attendance-message">Այսօր դեռ ներկայություն չեք նշել</p>
+                </div>
+                <div class="attendance-buttons" id="attendance-buttons">
+                    <button onclick="markAttendance('present')" class="present-btn">Ներկա</button>
+                    <button onclick="markAttendance('absent')" class="absent-btn">Բացակա</button>
+                </div>
+            </div>
+
+            <div class="attendance-history">
+                <h3>Ներկայության պատմություն</h3>
+                <div id="student-history" class="history-list"></div>
+            </div>
+
+            <div class="student-settings">
+                <h3>Կարգավորումներ</h3>
+                <div class="settings-buttons">
+                    <!-- Sound settings removed -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="admin-dashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h2>Ադմինիստրատորի Վահանակ</h2>
+                <div class="user-info">
+                    <p>Համակարգի Կառավարում</p>
+                </div>
+                <button onclick="logout()" class="logout-btn">Դուրս գալ</button>
+            </div>
+
+            <!-- Admin Statistics -->
+            <div class="admin-stats">
+                <h3>Համակարգի Վիճակագրություն</h3>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h4>Ընդամենը Աշակերտներ</h4>
+                        <div class="stat-number" id="total-students">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Ընդամենը Ուսուցիչներ</h4>
+                        <div class="stat-number" id="total-teachers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Այսօրվա Ներկայություն</h4>
+                        <div class="stat-number" id="today-attendance">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Ընդհանուր Գրառումներ</h4>
+                        <div class="stat-number" id="total-records">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management -->
+            <div class="user-management">
+                <h3>Օգտատերերի Կառավարում</h3>
+                <div class="management-tabs">
+                    <button onclick="showStudentsManagement()" class="tab-btn active" id="students-tab">Աշակերտներ</button>
+                    <button onclick="showTeachersManagement()" class="tab-btn" id="teachers-tab">Ուսուցիչներ</button>
+                </div>
+
+                <!-- Students Management -->
+                <div id="students-management" class="management-section">
+                    <div class="management-header">
+                        <h4>Աշակերտների Ցուցակ</h4>
+                        <div class="management-controls">
+                            <select id="grade-filter" onchange="filterStudents()">
+                                <option value="">Բոլոր դասարանները</option>
+                                <option value="10">10-րդ դասարան</option>
+                                <option value="11">11-րդ դասարան</option>
+                                <option value="12">12-րդ դասարան</option>
+                            </select>
+                            <input type="text" id="student-search" placeholder="Որոնել աշակերտ..." onkeyup="searchStudents()">
+                        </div>
+                    </div>
+                    <div id="students-list" class="users-list"></div>
+                </div>
+
+                <!-- Teachers Management -->
+                <div id="teachers-management" class="management-section hidden">
+                    <div class="management-header">
+                        <h4>Ուսուցիչների Ցուցակ</h4>
+                        <div class="management-controls">
+                            <input type="text" id="teacher-search" placeholder="Որոնել ուսուցիչ..." onkeyup="searchTeachers()">
+                        </div>
+                    </div>
+                    <div id="teachers-list" class="users-list"></div>
+                </div>
+            </div>
+
+            <!-- Attendance Overview -->
+            <div class="attendance-overview">
+                <h3>Ներկայության Ակնարկ</h3>
+                <div class="attendance-controls">
+                    <input type="date" id="admin-attendance-date" onchange="loadAttendanceOverview()">
+                    <button onclick="loadAttendanceOverview()" class="load-btn">Բեռնել</button>
+                </div>
+                <div id="attendance-overview-content" class="attendance-content"></div>
+            </div>
+
+            <!-- Automatic Attendance Control -->
+            <div class="auto-absent-control">
+                <h4>🤖 Ավտոմատ Բացակայություն</h4>
+                <p>Համակարգը ավտոմատ նշում է որպես բացակա այն աշակերտներին, ովքեր ժամկետում (8:00-9:00) ներկայություն չեն նշել: Ավտոմատ նշումը տեղի է ունենում յուրաքանչյուր օր ժամը 9:05-ին:</p>
+                <button onclick="triggerAutoAbsentCheck()" class="btn-auto-absent">⏰ Ստուգել Հիմա</button>
+                <small style="display: block; margin-top: 10px; color: #6c757d;">Այս կոճակը թույլ է տալիս ձեռքով գործարկել ավտոմատ բացակայության ստուգումը:</small>
+            </div>
+
+            <!-- Data Management -->
+            <div class="data-management">
+                <h3>📊 Տվյալների Կառավարում</h3>
+                <div class="data-buttons">
+                    <div class="export-section">
+                        <h4>📤 Արտահանել</h4>
+                        <button onclick="exportAllData()" class="export-btn">📋 Բոլոր տվյալները</button>
+                        <button onclick="exportStudentsList()" class="export-btn">👥 Աշակերտների ցուցակ</button>
+                        <button onclick="exportTeachersList()" class="export-btn">👩‍🏫 Ուսուցիչների ցուցակ</button>
+                        <button onclick="exportAttendanceReport()" class="export-btn">📈 Ներկայության հաշվետվություն</button>
+                        <button onclick="exportAllAdminData()" class="export-btn">📊 Ամբողջական ադմին հաշվետվություն</button>
+                    </div>
+                    <div class="import-section">
+                        <h4>📥 Ներմուծել</h4>
+                        <button onclick="importData()" class="import-btn">📁 Տվյալներ ներմուծել</button>
+                        <button onclick="showDataStatistics()" class="stats-btn">📊 Վիճակագրություն</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Actions -->
+            <div class="admin-actions">
+                <h3>⚙️ Ադմինիստրատիվ Գործողություններ</h3>
+                <div class="action-buttons">
+                    <button onclick="clearAllData()" class="action-btn danger">🗑️ Մաքրել Բոլոր Տվյալները</button>
+                    <button onclick="resetSystem()" class="action-btn warning">⚠️ Վերակայել Համակարգը</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Teacher Dashboard -->
+        <div id="teacher-dashboard" class="dashboard hidden">
+            <div class="dashboard-header">
+                <h2>Բարի գալուստ, <span id="teacher-name-display"></span></h2>
+                <div class="user-info">
+                    <p>Առարկա: <span id="teacher-subject-display"></span></p>
+                </div>
+                <button onclick="logout()" class="logout-btn">Դուրս գալ</button>
+            </div>
+
+            <div class="class-selection">
+                <h3>Ընտրեք դասարանը և դասասենյակը</h3>
+                <select id="teacher-grade-select">
+                    <option value="">Ընտրեք դասարանը</option>
+                    <option value="10">10-րդ դասարան</option>
+                    <option value="11">11-րդ դասարան</option>
+                    <option value="12">12-րդ դասարան</option>
+                </select>
+                <select id="teacher-classroom-select">
+                    <option value="">Ընտրեք դասասենյակը</option>
+                </select>
+                <button onclick="loadClassAttendance()" id="load-attendance-btn" disabled>Բեռնել ներկայությունը</button>
+            </div>
+
+            <div id="class-attendance" class="attendance-display hidden">
+                <h3>Դասարանի ներկայություն</h3>
+                <div class="date-selector">
+                    <label>Ընտրեք ամսաթիվը:</label>
+                    <input type="date" id="attendance-date" onchange="loadClassAttendance()">
+                </div>
+                <div id="students-list" class="students-grid"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-alert" class="alert-overlay hidden">
+        <div class="alert-modal">
+            <div class="alert-icon">
+                <span id="alert-icon-content">ℹ️</span>
+            </div>
+            <div class="alert-content">
+                <h3 id="alert-title">Ծանուցում</h3>
+                <p id="alert-message"></p>
+            </div>
+            <div class="alert-buttons">
+                <button id="alert-ok-btn" class="alert-btn-primary">Լավ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Access Modal -->
+    <div id="admin-access-modal" class="alert-overlay hidden">
+        <div class="alert-modal">
+            <div class="alert-icon">
+                <span>👑</span>
+            </div>
+            <div class="alert-content">
+                <h3>Ադմինիստրատորի Մուտք</h3>
+                <p>Ադմինիստրատիվ վահանակին մուտք գործելու համար մուտքագրեք ադմինի գաղտնաբառը:</p>
+                <div class="password-field">
+                    <input type="password" id="admin-main-password" placeholder="Ադմինի գաղտնաբառ" required>
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('admin-main-password')">👁️</button>
+                </div>
+                <div class="teacher-access-note">
+                    <p><strong>Նշում:</strong> Ադմինիստրատորն ունի բոլոր տվյալներին և գործառույթներին հասանելիության իրավունք:</p>
+                </div>
+            </div>
+            <div class="alert-buttons">
+                <button onclick="verifyAdminMainAccess()" class="alert-btn-primary">Մուտք</button>
+                <button onclick="closeAdminAccess()" class="alert-btn-secondary">Չեղարկել</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Teacher Access Modal -->
+    <div id="teacher-access-modal" class="alert-overlay hidden">
+        <div class="alert-modal">
+            <div class="alert-icon">
+                <span id="teacher-access-icon">🔐</span>
+            </div>
+            <div class="alert-content">
+                <h3>Ուսուցչական Մուտք</h3>
+                <p>Ուսուցչական հաշվին մուտք գործելու համար մուտքագրեք ադմինի գաղտնաբառը:</p>
+                <div class="password-field">
+                    <input type="password" id="admin-password" placeholder="Ադմինի գաղտնաբառ" required>
+                    <button type="button" class="password-toggle" onclick="togglePasswordVisibility('admin-password')">👁️</button>
+                </div>
+                <div class="teacher-access-note">
+                    <p><strong>Նշում:</strong> Միայն լիազորված ուսուցիչներն են կարող մուտք գործել այս բաժին:</p>
+                </div>
+            </div>
+            <div class="alert-buttons">
+                <button id="verify-admin-btn" onclick="verifyAdminAccess()" class="alert-btn-primary">Ստուգել</button>
+                <button id="cancel-admin-btn" onclick="closeTeacherAccess()" class="alert-btn-secondary">Չեղարկել</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="script.js"></script>
+</body>
+</html>
